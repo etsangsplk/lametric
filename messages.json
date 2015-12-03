@@ -1,0 +1,44 @@
+
+{ 
+  "loginRequest": {
+    "MESSAGE": "LOGIN_REQUEST_MESSAGE",
+    "TRANSACTION_ID": "$$will be replaced$$",
+    "PAYLOAD": {
+      "PASSWORD": "bogus123",
+      "ROLE": "USER",
+      "PROTOCOL": "1.0",
+      "USER_ID": "paigejohns",
+      "COMPANY_ID": "victorops-test",
+      "DEVICE_NAME": "thenemesisofvictorbot",
+      "SESSIONSTART": 0,
+      "TZ": "America/Denver"
+    }
+  },
+
+  "timelineRequestFromEnd": {
+    "MESSAGE": "TIMELINE_LIST_REQUEST_MESSAGE",
+    "TRANSACTION_ID": "$$will be replaced$$",
+    "PAYLOAD": {
+      "ROOM_ID": "*",
+      "SELECT_FROM_END": {
+        "LIMIT_SEQUENCE": 0,
+        "MAGNITUDE": 10
+      }
+    }
+ 
+  },
+
+"ackIncidentsMessage":{
+    "MESSAGE": "ACK_INCIDENTS_MESSAGE",
+    "TRANSACTION_ID": "$$will be replaced$$",
+    "PAYLOAD": {
+        "ACK_MSG": "Acknowledged from my clock!",
+        "RESOLVE": false,
+        "ENTITY_IDS": [
+            "foo.bar.victorops.com/SSH service",
+            "foo.bar.victorops.com/SSH service",
+            "mysql1.dfw01.victorops.com/"
+        ]
+    }
+}
+}

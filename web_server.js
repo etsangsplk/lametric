@@ -1,6 +1,5 @@
 /*
 * Server and WebSocket to add VictorOps functionality to the LaMetric
-*
 */
 
 //STILL FREAKS OUT WHEN ALERTS COME IN REALLY FAST
@@ -14,100 +13,92 @@ my_http = require("http");
 
 var JSONReq = require('./messages.json');
 var token = "MmQ1NTQ1MGRkYTY1MmY3YmQ3N2VlNTI5OWFhMzY1Yzc0OWIyZjhjZGJhNDQxZmZlOWU5ZmE0NTI3NTc3ZWFlZQ==" ; //The Lametric Token
-var newdata = JSON.stringify(JSONReq.ackIncidentsMessage);
-var newAckData = JSON.stringify(JSONReq.ackIncidentsMessage);
-var sendAckData = JSON.stringify(JSONReq.ackIncidentsMessage);
-var logData = JSON.stringify(JSONReq.loginRequest);
-var ackData = JSON.stringify(JSONReq.ackIncidentsMessage);
-var timelineReq = JSON.stringify(JSONReq.timelineRequestFromEnd);
-var acknowledge = JSON.stringify(JSONReq.acknowledge);
-var reset = JSON.stringify(JSONReq.reset);
 
-var EntityID=[];
+var sendAckData = "to be replaced"
+var EntityIDsToAck=[];
+var ws = new WebSocket('wss://stchat.victorops.com/chat');
 
 my_http.createServer(function(request,response){
 
-    //Code in function is triggered when server is kicked (URL of hosted server)
-
-    var wsACK = new WebSocket('wss://stchat.victorops.com/chat');
-    
-    wsACK.on('open', function open() {  
-      ws.send(sendAckData);
-    });
-
+    //Code in function is triggered when server is requested (URL of hosted server)
+   
+    ws.send(sendAckData);
+  
     ws.on('message', function(data, flags) {
       //console.log("Socket response: \n", data);
     });
 
-    pushData(acknowledge);
+    var acknowledgeToLM = JSON.stringify(JSONReq.acknowledge);
+    postLMData(acknowledgeToLM);
 
-    setTimeout(function(){pushData(reset);}, 3000); //reset to VictorOps
+    setTimeout(function(){postLMData(JSON.stringify(JSONReq.reset));}, 3000); //reset to VictorOps
 
-  EntityID =[]; //reset the the IDs since all alerts are acknowleged
-
-
-   console.log("Server Kicked");
+  EntityIDsToAck =[]; //reset the the IDs since all alerts are acknowleged
     
     response.end();
 
 }).listen(8080); 
 
-var ws = new WebSocket('wss://stchat.victorops.com/chat');
  
 ws.on('open', function open() {  
-  ws.send(logData);
+  ws.send(JSON.stringify(JSONReq.loginRequest));
 });
  
 ws.on('message', function(data, flags) {
 
-  newdata=JSON.parse(data.slice(data.indexOf('{')));
+// make into function with valid name
+  newdata=parse(data);
 
   var userPaged = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].USERS_PAGED'); 
   var NotifyType = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].NOTIFICATIONTYPE'); 
   var CurrentState = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].CURRENT_STATE'); 
   var IncidentName = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].INCIDENT_NAME'); 
   var CurrentAlertPhase = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].CURRENT_ALERT_PHASE'); 
-  var AlertNum = _.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].ALERT_COUNT'); 
-
 
   if (newdata.MESSAGE == "ENTITY_STATE_NOTIFY_MESSAGE" && (userPaged.indexOf(JSONReq.loginRequest.PAYLOAD.USER_ID) > -1) && CurrentAlertPhase == "UNACKED"){
-      newAckData=JSON.parse(ackData.slice(ackData.indexOf('{')));
+      //newAckData=JSON.parse(ackData.slice(ackData.indexOf('{')));
       console.log(_.get(newdata, 'PAYLOAD.SYSTEM_ALERT_STATE_LIST').length); //number of alerts
 
-      EntityID.push(newdata.PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].ENTITY_ID); 
 
-      console.log(EntityID);
+      //Only ever get one Entity ID??????????????
+      EntityIDsToAck.push(newdata.PAYLOAD.SYSTEM_ALERT_STATE_LIST[0].ENTITY_ID); 
 
-      _.set(newAckData, 'PAYLOAD.ENTITY_IDS', EntityID);
+      console.log(EntityIDsToAck);
 
-      sendAckData = JSON.stringify(newAckData);
+      var ackData = JSONReq.ackIncidentsMessage;
+      _.set(ackData, 'PAYLOAD.ENTITY_IDS', EntityIDsToAck);
 
-      var Notify;
-      if(EntityID.length == 1){
-        Notify = (NotifyType + ": " + CurrentState + " " + "Incident #" + IncidentName);
+      sendAckData = JSON.stringify(ackData);
+
+      var notifyString;
+      if(EntityIDsToAck.length == 1){
+        notifyString = (NotifyType + ": " + CurrentState + " " + "Incident #" + IncidentName);
       }
       else{
-        Notify = ((EntityID.length) + " " + NotifyType + "s: " + CurrentState + " " + "Incident #" + IncidentName);
+        notifyString  = ((EntityIDsToAck.length) + " " + NotifyType + "s: " + CurrentState + " " + "Incident #" + IncidentName);
       }
 
-      var notifyData = JSON.stringify({
+      //LM notify data 
+      var lemetricNotifyData = JSON.stringify({
       "frames": [
           {
               "index": 0,
-              "text": Notify,
+              "text": notifyString,
               "icon": "i1897"
           }
         ]
       });
 
-      pushData(notifyData);
+      postLMData(lemetricNotifyData);
 
     }
 });
 
 console.log("Server Running on 8080"); 
 
-function pushData(data){
+
+
+function postLMData(data){
 
     var request = require('request');
           request({
@@ -118,21 +109,27 @@ function pushData(data){
               'X-Access-Token': token,
               'Cache-Control': 'no-cache'
             },
-
+  
              body: data,
           
         }, function (error, response, body){
             if(error) {
                 console.log(error);
+                console.log("ERROR PUSHING DATA");
+
             } else {
-                console.log(response.statusCode, body);   
+                console.log(response.statusCode, body); 
+                console.log("PUSH DATA:", data);
+  
             }
         });
 
 };
 
-
-
+function parse(str) {
+    //how to catch errors?!?!
+    return JSON.parse(str.slice(str.indexOf('{')))
+}
 
 
 

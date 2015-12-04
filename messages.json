@@ -15,18 +15,6 @@
     }
   },
 
-  "timelineRequestFromEnd": {
-    "MESSAGE": "TIMELINE_LIST_REQUEST_MESSAGE",
-    "TRANSACTION_ID": "$$will be replaced$$",
-    "PAYLOAD": {
-      "ROOM_ID": "*",
-      "SELECT_FROM_END": {
-        "LIMIT_SEQUENCE": 0,
-        "MAGNITUDE": 10
-      }
-    }
- 
-  },
 
 "ackIncidentsMessage":{
     "MESSAGE": "ACK_INCIDENTS_MESSAGE",
@@ -40,5 +28,26 @@
             "mysql1.dfw01.victorops.com/"
         ]
     }
+},
+
+"acknowledge":{
+"frames": [
+      {
+          "index": 0,
+          "text": "All Alerts Acknowleged",
+          "icon": "i1903"
+      }
+    ]
+    
+},
+
+"reset":{
+"frames": [
+      {
+          "index": 0,
+          "text": "victorops",
+          "icon": "i1903"
+      }
+    ]
 }
 }

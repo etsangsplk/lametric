@@ -14,7 +14,7 @@ var util = require("util"),
 my_http = require("http");
 
 var JSONReq = require('./messages.json');
-var token = "Your Token Here" ; //Update to your token
+var token = "MmQ1NTQ1MGRkYTY1MmY3YmQ3N2VlNTI5OWFhMzY1Yzc0OWIyZjhjZGJhNDQxZmZlOWU5ZmE0NTI3NTc3ZWFlZQ==" ; //Update to your token
 var sendAckData = "to be replaced";
 var EntityIDsToAck=[];
 var ws = new WebSocket('wss://stchat.victorops.com/chat');
@@ -78,7 +78,6 @@ ws.on('message', function(data, flags) {
       else{
         notifyString  = ((EntityIDsToAck.length) + " " + NotifyType + "s: " + CurrentState + " " + "Incident #" + IncidentName);
       }
-
       var lemetricNotifyData = JSON.stringify({
       "frames": [
           {
@@ -102,7 +101,7 @@ function postLMData(data){
 
     var request = require('request');
           request({
-            url: "Your URL Here", //Update to your URL
+            url: "https://developer.lametric.com/api/V1/dev/widget/update/com.lametric.a08cdbaae4911c5284268644f32cc852/5", //Update to your URL
             method: "POST",   
             headers: {
               'Accept': 'application/json',

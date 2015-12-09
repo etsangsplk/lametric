@@ -4,11 +4,11 @@
     "MESSAGE": "LOGIN_REQUEST_MESSAGE",
     "TRANSACTION_ID": "$$will be replaced$$",
     "PAYLOAD": {
-      "PASSWORD": "yourPassword",
+      "PASSWORD": "bogus123",
       "ROLE": "USER",
       "PROTOCOL": "1.0",
-      "USER_ID": "yourUserID",
-      "COMPANY_ID": "yourCompanyID",
+      "USER_ID": "paigejohns",
+      "COMPANY_ID": "victorops-test",
       "DEVICE_NAME": "thenemesisofvictorbot",
       "SESSIONSTART": 0,
       "TZ": "America/Denver"

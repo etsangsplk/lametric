@@ -1,13 +1,14 @@
 # LaMetric Server
-Integrate your LeMetric with your VictorOps account
+Integrate your LeMetric with your VictorOps account.  The LaMetric will notify you of current iccidents. 
 
-Create your own indicator app at developer.lametric.com/
-Type: Push
-Icon: VictorOps1 (1903)
-Text: VictorOps
+Create your own indicator app at developer.lametric.com  
+Type: Push  
+Icon: VictorOps1 (i1903)  
+Text: VictorOps  
+Check "Private app" in the "Store Info" tab
 
-Update messages.json to refelct your Username, Password, and Company
-Update web_server to use your LaMetric Token and URL
+Update messages.json to refelct your Username, Password, and Company  
+Update web_server to use your LaMetric Token and URL  
 
 Install:
 ```bash
@@ -29,3 +30,8 @@ $ ngrok http 8080
 
 You need to input the URL on you app via LaMetric's website
 
+Turn on Notifications on the app once you download it!
+
+## Copyright
+
+Copyright &copy; 2014 VictorOps, Inc.

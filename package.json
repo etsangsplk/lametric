@@ -1,0 +1,29 @@
+{
+  "name": "lametric",
+  "version": "1.0.0",
+  "description": "Integrate your LeMetric with your VictorOps account ",
+  "main": "web_server.js",
+  "dependencies": {
+    "lodash": "^3.10.1",
+    "request": "^2.65.0",
+    "ws": "^0.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node web_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/victorops/lametric.git"
+  },
+  "keywords": [
+    "LaMetric",
+    "VictorOps"
+  ],
+  "author": "Paige Johnson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/victorops/lametric/issues"
+  },
+  "homepage": "https://github.com/victorops/lametric#readme"
+}
